@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <Content Include="ViewModels\ItemViewModel.cs" />
-    <Content Include="wwwroot\systemjs.config.ts" />
+    <Content Include="wwwroot\systemjs.config.js" />
     <Content Include="wwwroot\index.html" />
   </ItemGroup>
   <ItemGroup>
@@ -37,9 +37,6 @@
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="wwwroot\systemjs.config.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />

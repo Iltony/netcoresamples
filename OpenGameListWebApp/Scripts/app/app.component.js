@@ -15,15 +15,16 @@ System.register(["@angular/core"], function (exports_1, context_1) {
             }
         ],
         execute: function () {
-            AppComponent = (function () {
-                function AppComponent() {
+            AppComponent = class AppComponent {
+                constructor() {
+                    this.title = "OpenGameList";
                 }
-                return AppComponent;
-            }());
+            };
             AppComponent = __decorate([
                 core_1.Component({
                     selector: "opengamelist",
-                    template: "<h1>OpenGameList</h1><div>...the best is yet to come:)</div>"
+                    template: `<h1>{{title}}</h1>
+                <item-list></item-list>`
                 })
             ], AppComponent);
             exports_1("AppComponent", AppComponent);

@@ -133,7 +133,7 @@ namespace OpenGameListWebApp.Controllers
                 {
                     Id = id,
                     Title = String.Format("Item {0} Title", id),
-                    Description = String.Format("This is a sample description for item { 0}: Lorem ipsum dolor sit amet.", id),
+                    Description = String.Format("This is a sample description for item {0}: Lorem ipsum dolor sit amet.", id),
                     CreatedDate = date,
                     LastModifiedDate = date,
                     ViewCount = num - id
