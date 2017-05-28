@@ -23,8 +23,15 @@ System.register(["@angular/core"], function (exports_1, context_1) {
             AppComponent = __decorate([
                 core_1.Component({
                     selector: "opengamelist",
-                    template: `<h1>{{title}}</h1>
-                <item-list></item-list>`
+                    template: `
+<h1>{{title}}</h1>
+<div class="menu">
+<a class="home" [routerLink]="['']">Home</a>
+| <a class="about" [routerLink]="['about']">About</a>
+| <a class="login" [routerLink]="['login']">Login</a>
+</div>
+<router-outlet></router-outlet>
+`
                 })
             ], AppComponent);
             exports_1("AppComponent", AppComponent);
