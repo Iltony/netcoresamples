@@ -241,7 +241,7 @@ namespace OpenGameListWebApp.Data
             {
                 UserId = authorId,
                 Title = String.Format("Item {0} Title", id),
-                Description = String.Format("This is a sample description for item { 0 }: Lorem ipsum dolor sit amet.", id),
+                Description = String.Format("This is a sample description for item {0}: Lorem ipsum dolor sit amet.", id),
                 Notes = "This is a sample record created by the Code-First Configuration class",
                 ViewCount = viewCount,
                 CreatedDate = createdDate,
