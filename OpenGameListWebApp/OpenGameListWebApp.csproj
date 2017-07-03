@@ -49,5 +49,10 @@
     <Folder Include="Controllers\" />
     <Folder Include="img\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\favicon.ico" />
+    <None Include="wwwroot\img\header-bg.png" />
+    <None Include="wwwroot\img\logo.svg" />
+  </ItemGroup>
 
 </Project>
