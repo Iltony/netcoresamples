@@ -2,16 +2,14 @@
 @color-latest: #5a4d74;
 @color-most-viewed: #4d6552;
 @color-random: #703535;
-
 // Header styling
 h1.header {
     font-size: 40px;
-    margin: 85px 0 0 0;
+    margin: 46px 0 0 0;
     padding: 20px 20px 20px 112px;
     background: url(/img/header-bg.png) no-repeat left top #efefef;
     text-align: left;
 }
-
 // Navbar styling
 .navbar {
     margin-bottom: 0;
@@ -22,18 +20,20 @@ h1.header {
         margin: -4px 0 0 0;
         padding: 0;
     }
-    // Expand/collapse the navbar in mobile-friendly mode using pure CSS styling.
+    // Expand/collapse the navbar in mobile-friendly mode using pure CSS styling .
     // ref.: http://stackoverflow.com/a/31506685/1233379
-    #navbar-toggle-cbox {
-        display: none;
+    #navbar-toggle-cbox
 
-        &:checked ~ .collapse {
-            display: block;
-        }
+{
+    display: none;
+
+    &:checked ~ .collapse {
+        display: block;
     }
 }
 
-// Improve the visibility of the active navbar item (currently active route)
+}
+// Improve the visibility of the active navbar item (currently active route) 
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
@@ -54,7 +54,6 @@ item-list {
     margin: 0;
     padding: 0;
     vertical-align: top;
-    display: block;
 
     &.latest {
         background-color: #f6f6f6;
@@ -125,6 +124,7 @@ item-list {
         }
     }
 }
+
 // Item Detail View & Edit components styling
 @color-panel: #f9f9f9;
 
@@ -173,5 +173,47 @@ item-list {
             margin: 10px 0 20px 0;
             font-weight: bold;
         }
+    }
+}
+
+// Form styling for item-detail-edit component
+form.item-detail-edit {
+    .empty-field {
+        color: #f04124;
+    }
+
+    .form-group {
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            display: block;
+            background-color: #eaeaea;
+            line-height: 1.4em;
+            padding: 5px 10px;
+        }
+
+        textarea {
+            &#input-description {
+                height: 80px;
+            }
+
+            &#input-text {
+                height: 150px;
+            }
+        }
+    }
+
+    .commands {
+        text-align: right;
+
+        input[type="button"] {
+            margin-left: 5px;
+        }
+    }
+
+    .empty-field {
+        color: #f04124;
+        font-weight: normal;
+        font-style: italic;
     }
 }
