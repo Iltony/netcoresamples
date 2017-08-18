@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Nelibur.ObjectMapper;
+using OpenGameListWebApp.Classes;
 using OpenGameListWebApp.Data;
 using OpenGameListWebApp.Data.Items;
 using OpenGameListWebApp.Data.Users;
@@ -81,6 +80,24 @@ namespace OpenGameListWebApp
                     context.Context.Response.Headers["Expires"] =
                     Configuration["StaticFiles:Headers:Expires"];
                 }
+            });
+
+            // Add a custom Jwt Provider to generate Tokens
+            app.UseJwtProvider();
+
+            // Add the Jwt Bearer Header Authentication to validate Tokens
+            app.UseJwtBearerAuthentication(new JwtBearerOptions()
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                RequireHttpsMetadata = false,
+                TokenValidationParameters = new TokenValidationParameters()
+                {
+                    IssuerSigningKey = JwtProvider.SecurityKey,
+                    ValidIssuer = JwtProvider.Issuer,
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                },
             });
 
             // Add MVC to the pipeline

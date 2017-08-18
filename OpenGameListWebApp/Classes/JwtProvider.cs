@@ -28,8 +28,8 @@ namespace OpenGameListWebApp.Classes
 
         #region Static Members
         private static readonly string PrivateKey = "private_key_1234567890";
-        public static readonly SymmetricSecurityKey SecurityKey = new
-        SymmetricSecurityKey(Encoding.ASCII.GetBytes(PrivateKey));
+        public static readonly SymmetricSecurityKey SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(PrivateKey));
+
         public static readonly string Issuer = "OpenGameListWebApp";
         public static string TokenEndPoint = "/api/connect/token";
         #endregion Static Members
