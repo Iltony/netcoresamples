@@ -1,4 +1,4 @@
-System.register(["@angular/core", "@angular/platform-browser", "@angular/http", "@angular/forms", "@angular/router", "rxjs/Rx", "./about.component", "./app.component", "./home.component", "./item-detail-edit.component", "./item-detail-view.component", "./item-list.component", "./login.component", "./page-not-found.component", "./app.routing", "./item.service"], function (exports_1, context_1) {
+System.register(["@angular/core", "@angular/platform-browser", "@angular/http", "@angular/forms", "@angular/router", "rxjs/Rx", "./about.component", "./app.component", "./home.component", "./item-detail-edit.component", "./item-detail-view.component", "./item-list.component", "./login.component", "./page-not-found.component", "./app.routing", "./auth.service", "./item.service"], function (exports_1, context_1) {
     "use strict";
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -7,7 +7,7 @@ System.register(["@angular/core", "@angular/platform-browser", "@angular/http", 
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
     var __moduleName = context_1 && context_1.id;
-    var core_1, platform_browser_1, http_1, forms_1, router_1, about_component_1, app_component_1, home_component_1, item_detail_edit_component_1, item_detail_view_component_1, item_list_component_1, login_component_1, page_not_found_component_1, app_routing_1, item_service_1, AppModule;
+    var core_1, platform_browser_1, http_1, forms_1, router_1, about_component_1, app_component_1, home_component_1, item_detail_edit_component_1, item_detail_view_component_1, item_list_component_1, login_component_1, page_not_found_component_1, app_routing_1, auth_service_1, item_service_1, AppModule;
     return {
         setters: [
             function (core_1_1) {
@@ -54,6 +54,9 @@ System.register(["@angular/core", "@angular/platform-browser", "@angular/http", 
             function (app_routing_1_1) {
                 app_routing_1 = app_routing_1_1;
             },
+            function (auth_service_1_1) {
+                auth_service_1 = auth_service_1_1;
+            },
             function (item_service_1_1) {
                 item_service_1 = item_service_1_1;
             }
@@ -85,6 +88,7 @@ System.register(["@angular/core", "@angular/platform-browser", "@angular/http", 
                     ],
                     // providers
                     providers: [
+                        auth_service_1.AuthService,
                         item_service_1.ItemService
                     ],
                     bootstrap: [

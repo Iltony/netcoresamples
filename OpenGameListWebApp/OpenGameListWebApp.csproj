@@ -51,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="img\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\favicon.ico" />

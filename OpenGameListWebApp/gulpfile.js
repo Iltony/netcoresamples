@@ -22,6 +22,10 @@ var srcPaths = {
     ],
     js_rxjs: [
         'node_modules/rxjs/**'
+    ],
+    img: [
+        'img/*.png', 
+        'img/*.svg'
     ], 
     less: [
         'Scripts/less/**/*.less'
@@ -31,6 +35,7 @@ var srcPaths = {
 var destPaths = {
     app: 'wwwroot/app/',
     js: 'wwwroot/js/',
+    img: 'wwwroot/img/',
     js_angular: 'wwwroot/js/@angular/',
     js_rxjs: 'wwwroot/js/rxjs/',
     css: 'wwwroot/css/'
@@ -76,9 +81,20 @@ gulp.task('less', ['less_clean'], function () {
         .pipe(gulp.dest(destPaths.css));
 });
 
-// Deletes wwwroot/css contents
+// Deletes wwwroot/less contents
 gulp.task('less_clean', function () {
     return gulp.src(destPaths.css + "*.*", { read: false })
+        .pipe(gp_clean({ force: true }));
+});
+
+gulp.task('img', ['img_clean'], function () {
+    return gulp.src(srcPaths.img)
+                .pipe(gulp.dest(destPaths.img));
+});
+
+// Deletes wwwroot/img contents
+gulp.task('img_clean', function () {
+    return gulp.src(destPaths.img + "*.*", { read: false })
         .pipe(gp_clean({ force: true }));
 });
 
@@ -88,7 +104,7 @@ gulp.task('watch', function () {
 });
 
 // Global cleanup task
-gulp.task('cleanup', ['app_clean', 'js_clean', 'less_clean']);
+gulp.task('cleanup', ['app_clean', 'js_clean', 'img_clean', 'less_clean']);
 
 // Define the default task so it will launch all other tasks
-gulp.task('default', ['app', 'js', 'less', 'watch']);
+gulp.task('default', ['app', 'js', 'img', 'less', 'watch']);

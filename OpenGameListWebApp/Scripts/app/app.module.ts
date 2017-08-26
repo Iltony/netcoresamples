@@ -15,6 +15,7 @@ import { ItemListComponent } from "./item-list.component";
 import { LoginComponent } from "./login.component";
 import { PageNotFoundComponent } from "./page-not-found.component";
 import { AppRouting } from "./app.routing";
+import { AuthService } from "./auth.service";
 import { ItemService } from "./item.service";
 
 @NgModule({
@@ -40,6 +41,7 @@ import { ItemService } from "./item.service";
     ],
     // providers
     providers: [
+        AuthService,
         ItemService
     ],
     bootstrap: [
