@@ -9,6 +9,8 @@ using OpenGameListWebApp.Data;
 using OpenGameListWebApp.Data.Items;
 using Nelibur.ObjectMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace OpenGameListWebApp.Controllers
 {
@@ -64,7 +66,9 @@ namespace OpenGameListWebApp.Controllers
         /// <summary>
         /// POST: api/items
         /// </summary>
-        /// <returns>Creates a new Item and return it accordingly.</returns> [HttpPost()]
+        /// <returns>Creates a new Item and return it accordingly.</returns> 
+        [HttpPost()]
+        [Authorize]
         public IActionResult Add([FromBody]ItemViewModel ivm)
         {
             if (ivm != null)
@@ -73,9 +77,8 @@ namespace OpenGameListWebApp.Controllers
                 var item = TinyMapper.Map<Item>(ivm);
                 // override any property that could be wise to set from server - side only
                 item.CreatedDate = item.LastModifiedDate = DateTime.Now;
-                // TODO: replace the following with the current user's id when authentication will be available.
-                item.UserId = DbContext.Users.Where(u => u.UserName == "Admin").FirstOrDefault().Id;
-                // add the new item
+                item.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                // add the new item     
                 DbContext.Items.Add(item);
                 // persist the changes into the Database.
                 DbContext.SaveChanges();
@@ -92,6 +95,7 @@ namespace OpenGameListWebApp.Controllers
         /// </summary>
         /// <returns>Updates an existing Item and return it accordingly.</returns>
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Update(int id, [FromBody]ItemViewModel ivm)
         {
             if (ivm != null)
@@ -129,6 +133,7 @@ namespace OpenGameListWebApp.Controllers
         /// </summary>
         /// <returns>Deletes an Item, returning a HTTP status 200 (ok) when done.</ returns >
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var item = DbContext.Items.Where(i => i.Id == id).FirstOrDefault();

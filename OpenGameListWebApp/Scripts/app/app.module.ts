@@ -14,7 +14,8 @@ import { ItemDetailViewComponent } from "./item-detail-view.component";
 import { ItemListComponent } from "./item-list.component";
 import { LoginComponent } from "./login.component";
 import { PageNotFoundComponent } from "./page-not-found.component";
-import { AppRouting } from "./app.routing";
+import { AppRouting } from "./app.routing"; 
+import { AuthHttp } from "./auth.http";
 import { AuthService } from "./auth.service";
 import { ItemService } from "./item.service";
 
@@ -41,6 +42,7 @@ import { ItemService } from "./item.service";
     ],
     // providers
     providers: [
+        AuthHttp,
         AuthService,
         ItemService
     ],
