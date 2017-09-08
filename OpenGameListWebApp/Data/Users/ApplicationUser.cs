@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using OpenGameListWebApp.Data.Comments;
 using OpenGameListWebApp.Data.Items;
+using OpenIddict;
 
 namespace OpenGameListWebApp.Data.Users
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : OpenIddictUser
     {
         #region Constructor
         public ApplicationUser()

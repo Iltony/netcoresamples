@@ -1,13 +1,13 @@
-﻿
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using OpenGameListWebApp.Data.Comments;
 using OpenGameListWebApp.Data.Items;
 using OpenGameListWebApp.Data.Users;
+
 namespace OpenGameListWebApp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    //public class ApplicationDbContext : openod.OpenId ctDbContext<ApplicationUser>
+    public class ApplicationDbContext : OpenIddictDbContext<ApplicationUser>
     {
         #region Constructor
         public ApplicationDbContext(DbContextOptions options) :
