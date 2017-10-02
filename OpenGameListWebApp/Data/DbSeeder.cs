@@ -9,6 +9,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using OpenIddict.Core;
+using CryptoHelper;
+using Microsoft.Extensions.Configuration;
+using OpenIddict.Models;
+using System.Threading;
 
 namespace OpenGameListWebApp.Data
 {
@@ -18,84 +23,56 @@ namespace OpenGameListWebApp.Data
         private ApplicationDbContext DbContext;
         private RoleManager<IdentityRole> RoleManager;
         private UserManager<ApplicationUser> UserManager;
+        private IConfiguration Configuration;
+        private OpenIddictApplicationManager<OpenIddictApplication> OpenIddictManager;
         #endregion Private Members
         #region Constructor
-        public DbSeeder(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public DbSeeder(ApplicationDbContext dbContext,
+           RoleManager<IdentityRole> RoleManager,
+           UserManager<ApplicationUser> UserManager,
+           IConfiguration Configuration,
+           OpenIddictApplicationManager<OpenIddictApplication> OpenIddictManager)
         {
-            DbContext = dbContext;
-            RoleManager = roleManager;
-            UserManager = userManager;
+            this.DbContext = dbContext;
+            this.RoleManager = RoleManager;
+            this.UserManager = UserManager;
+            this.Configuration = Configuration;
+            this.OpenIddictManager = OpenIddictManager;
         }
         #endregion Constructor
         #region Public Methods
         public async Task SeedAsync()
         {
-            // Create default Users
-            if (await DbContext.Users.CountAsync() == 0) await CreateUsersAsync();
-            // Create default Items (if there are none) and Comments
+            //Create the db if it doesn't exist
+            DbContext.Database.EnsureCreated();
+
+            if ((await OpenIddictManager.FindByClientIdAsync(Configuration["Authentication:OpenIddict:ClientId"], new CancellationToken())) == null)
+            {
+                CreateApplication().GetAwaiter().GetResult();
+            }
+
+            //Create Default users
+            if (await DbContext.Users.CountAsync() == 0)
+                await CreateUsersAsync();
             if (await DbContext.Items.CountAsync() == 0) CreateItems();
         }
         #endregion Public Methods
         #region Seed Methods
-        //        private void CreateUsers()
-        //        {
-        //            // local variables
-        //            DateTime createdDate = new DateTime(2016, 03, 01, 12, 30, 00);
-        //            DateTime lastModifiedDate = DateTime.Now;
-        //            // Create the "Admin" ApplicationUser account (if it doesn't exist already)
-        //            var user_Admin = new ApplicationUser()
-        //            {
-        //                Id =
-        //            Guid.NewGuid().ToString(),
-        //                UserName = "Admin",
-        //                Email =
-        //            "admin@opengamelist.com",
-        //                CreatedDate = createdDate,
-        //                LastModifiedDate =
-        //            lastModifiedDate
-        //            };
-        //            // Insert "Admin" into the Database
-        //            DbContext.Users.Add(user_Admin);
-        //#if DEBUG
-        //            // Create some sample registered user accounts (if they don't exist already)
-        //            var user_Ryan = new ApplicationUser()
-        //            {
-        //                Id =
-        //            Guid.NewGuid().ToString(),
-        //                UserName = "Ryan",
-        //                Email =
-        //            "ryan@opengamelist.com",
-        //                CreatedDate = createdDate,
-        //                LastModifiedDate =
-        //            lastModifiedDate
-        //            };
-        //            var user_Solice = new ApplicationUser()
-        //            {
-        //                Id =
-        //            Guid.NewGuid().ToString(),
-        //                UserName = "Solice",
-        //                Email =
-        //            "solice@opengamelist.com",
-        //                CreatedDate = createdDate,
-        //                LastModifiedDate =
-        //            lastModifiedDate
-        //            };
-        //            var user_Vodan = new ApplicationUser()
-        //            {
-        //                Id =
-        //            Guid.NewGuid().ToString(),
-        //                UserName = "Vodan",
-        //                Email =
-        //            "vodan@opengamelist.com",
-        //                CreatedDate = createdDate,
-        //                LastModifiedDate =
-        //            lastModifiedDate
-        //            };
-        //            // Insert sample registered users into the Database
-        //            DbContext.Users.AddRange(user_Ryan, user_Solice, user_Vodan);
-        //#endif
-        //            DbContext.SaveChanges();
-        //        }
+        private async Task CreateApplication()
+        {
+            await OpenIddictManager.CreateAsync(new OpenIddictApplication
+            {
+                Id = Configuration["Authentication:OpenIddict:ApplicationId"],
+                DisplayName = Configuration["Authentication:OpenIddict:DisplayName"],
+                RedirectUri = Configuration["Authentication:OpenIddict:Authority"] + Configuration["Authentication:OpenIddict:TokenEndPoint"],
+                LogoutRedirectUri = Configuration["Authentication:OpenIddict:Authority"],
+                ClientId = Configuration["Authentication:OpenIddict:ClientId"],
+                // ClientSecret = Crypto.HashPassword(Configuration["Authentication:OpenIddict:ClientSecret"]),
+                Type = OpenIddictConstants.ClientTypes.Public
+            }, new CancellationToken());
+            //This is the new way of adding a client secret, although it won't work if the application is marked as public.
+            //}, Configuration["Authentication:OpenIddict:ClientSecret"], new CancellationToken());
+        }
 
         private async Task CreateUsersAsync()
         {

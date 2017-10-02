@@ -14,6 +14,10 @@ using OpenGameListWebApp.Data;
 using OpenGameListWebApp.Data.Items;
 using OpenGameListWebApp.Data.Users;
 using OpenGameListWebApp.ViewModels;
+using OpenIddict.Core;
+using OpenIddict.Models;
+using Microsoft.AspNetCore.Identity;
+using AspNet.Security.OpenIdConnect.Primitives;
 
 namespace OpenGameListWebApp
 {
@@ -34,6 +38,9 @@ namespace OpenGameListWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Create a reference to the Configuration object to do DI
+            services.AddSingleton<IConfiguration>(x => Configuration);
+
             // Add framework services.
             services.AddMvc();
 
@@ -47,14 +54,53 @@ namespace OpenGameListWebApp
                 config.Cookies.ApplicationCookie.AutomaticChallenge = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
-
             .AddDefaultTokenProviders();
+
+            // Configure Identity to use the same JWT claims as OpenIddict instead
+            // of the legacy WS-Federation claims it uses by default (ClaimTypes),
+            // which saves you from doing the mapping in your authorization controller.
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
+                options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
+                options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
+            });
+
             // Add ApplicationDbContext.
-            services.AddDbContext<ApplicationDbContext>(options => 
-            options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]) );
+            services.AddDbContext<ApplicationDbContext>(options => {
+                options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]);
+                options.UseOpenIddict();
+            });
+
+            // Register the OpenIddict services, including the default Entity Framework stores.
+            services.AddOpenIddict(options => {
+                options.AddEntityFrameworkCoreStores<ApplicationDbContext>()
+                // Use Json Web Tokens (JWT)
+                .UseJsonWebTokens()
+                // Set a custom token endpoint (default is /connect/token)
+                .EnableTokenEndpoint(Configuration["Authentication:OpenIddict:TokenEndPoint"])
+                // Set a custom auth endpoint (default is /connect/authorize)
+                .EnableAuthorizationEndpoint(Configuration["Authentication:OpenIddict:AuthorizationEndPoint"])
+                // Allow client applications to use the grant_type=password flow.
+                .AllowPasswordFlow()
+                // Enable support for both authorization & implicit flows
+                .AllowAuthorizationCodeFlow()
+                .AllowImplicitFlow()
+                // Allow the client to refresh tokens.
+                .AllowRefreshTokenFlow()
+                // Disable the HTTPS requirement (not recommended in production)
+                .DisableHttpsRequirement()
+                // Register a new ephemeral key for development.
+                // We will register a X.509 certificate in production.
+                .AddEphemeralSigningKey();
+            });
 
             // Add ApplicationDbContext's DbSeeder
             services.AddSingleton<DbSeeder>();
+            services.AddSingleton<OpenIddictApplicationManager<OpenIddictApplication>>();
+            services.AddSingleton<SignInManager<ApplicationUser>>();
+            services.AddSingleton<UserManager<ApplicationUser>>();
+            services.AddOptions();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,7 +130,7 @@ namespace OpenGameListWebApp
 
             // Add a custom Jwt Provider to generate Tokens
             app.UseJwtProvider();
-
+            
             // Add the Jwt Bearer Header Authentication to validate Tokens
             app.UseJwtBearerAuthentication(new JwtBearerOptions()
             {

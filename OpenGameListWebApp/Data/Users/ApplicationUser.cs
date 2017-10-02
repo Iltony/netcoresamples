@@ -8,7 +8,7 @@ using OpenIddict;
 
 namespace OpenGameListWebApp.Data.Users
 {
-    public class ApplicationUser : OpenIddictUser
+    public class ApplicationUser : IdentityUser
     {
         #region Constructor
         public ApplicationUser()
