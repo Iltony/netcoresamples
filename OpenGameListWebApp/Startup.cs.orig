@@ -38,8 +38,13 @@ namespace OpenGameListWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+<<<<<<< HEAD
             // Create a reference to the Configuration object to do DI
             services.AddSingleton<IConfiguration>(x => Configuration);
+=======
+            // Add a reference to the Configuration object for DI
+            services.AddSingleton<IConfiguration>(c => { return Configuration; });
+>>>>>>> c453fd455488007f659907e7ef921ea2dd03632a
 
             // Add framework services.
             services.AddMvc();
@@ -57,6 +62,7 @@ namespace OpenGameListWebApp
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+<<<<<<< HEAD
             // Configure Identity to use the same JWT claims as OpenIddict instead
             // of the legacy WS-Federation claims it uses by default (ClaimTypes),
             // which saves you from doing the mapping in your authorization controller.
@@ -95,6 +101,75 @@ namespace OpenGameListWebApp
                 // We will register a X.509 certificate in production.
                 .AddEphemeralSigningKey();
             });
+=======
+            // Add ApplicationDbContext.
+            services.AddDbContext<DbContext>(options =>
+            {
+                options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]);
+                //options.UseOpenIddict();
+            });
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+
+
+            services.AddDbContext<DbContext>(options =>
+            {
+                // Configure the context to use an in-memory store.
+                options.UseInMemoryDatabase(nameof(DbContext));
+                // Register the entity sets needed by OpenIddict.
+                // Note: use the generic overload if you need
+                // to replace the default OpenIddict entities.
+                options.UseOpenIddict();
+            });
+            services.AddOpenIddict(options =>
+            {
+                // Register the Entity Framework stores.
+                options.AddEntityFrameworkCoreStores<DbContext>();
+                // Register the ASP.NET Core MVC binder used by OpenIddict.
+                // Note: if you don't call this method, you won't be able to
+                // bind OpenIdConnectRequest or OpenIdConnectResponse parameters.
+                options.AddMvcBinders();
+                // Enable the token endpoint.
+                options.EnableTokenEndpoint("/connect/token");
+                // Enable the password flow.
+                options.AllowPasswordFlow();
+                // During development, you can disable the HTTPS requirement.
+                options.DisableHttpsRequirement();
+            });
+            // Register the validation handler, that is used to decrypt the tokens.
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = OAuthValidationDefaults.AuthenticationScheme;
+            })
+            .AddOAuthValidation();
+
+
+
+            // Register the OpenIddict services, including the default Entity Framework stores.
+            services.AddOpenIddict<ApplicationUser, ApplicationDbContext>()
+
+            // Integrate with EFCore
+            .AddEntityFramework<ApplicationDbContext>()
+            // Use Json Web Tokens (JWT)
+            .UseJsonWebTokens()
+            // Set a custom token endpoint (default is /connect/token)
+            .EnableTokenEndpoint(Configuration["Authentication:OpenIddict:TokenEndPoint"])
+            // Set a custom auth endpoint (default is /connect/authorize)
+            .EnableAuthorizationEndpoint("/api/connect/authorize")
+            // Allow client applications to use the grant_type=password flow.
+            .AllowPasswordFlow()
+            // Enable support for both authorization & implicit flows
+            .AllowAuthorizationCodeFlow()
+            .AllowImplicitFlow()
+            // Allow the client to refresh tokens.
+            .AllowRefreshTokenFlow()
+            // Disable the HTTPS requirement (not recommended in production)
+            .DisableHttpsRequirement()
+            // Register a new ephemeral key for development.
+            // We will register a X.509 certificate in production.
+            .AddEphemeralSigningKey();
+
+>>>>>>> c453fd455488007f659907e7ef921ea2dd03632a
 
             // Add ApplicationDbContext's DbSeeder
             services.AddSingleton<DbSeeder>();
