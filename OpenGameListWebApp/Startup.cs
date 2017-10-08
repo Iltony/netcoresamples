@@ -30,6 +30,7 @@ namespace OpenGameListWebApp
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
@@ -74,7 +75,8 @@ namespace OpenGameListWebApp
             });
 
             // Register the OpenIddict services, including the default Entity Framework stores.
-            services.AddOpenIddict(options => {
+            services.AddOpenIddict(options =>
+            {
                 options.AddEntityFrameworkCoreStores<ApplicationDbContext>()
                 // Use Json Web Tokens (JWT)
                 .UseJsonWebTokens()
@@ -120,28 +122,44 @@ namespace OpenGameListWebApp
                 OnPrepareResponse = (context) =>
                 {
                     // Disable caching for all static files.
-                    context.Context.Response.Headers["Cache-Control"] =
-                    Configuration["StaticFiles:Headers:Cache-Control"];
-                    context.Context.Response.Headers["Pragma"] =
-                    Configuration["StaticFiles:Headers:Pragma"];
-                    context.Context.Response.Headers["Expires"] =
-                    Configuration["StaticFiles:Headers:Expires"];
+                    context.Context.Response.Headers["Cache-Control"] = Configuration["StaticFiles:Headers:Cache-Control"];
+                    context.Context.Response.Headers["Pragma"] = Configuration["StaticFiles:Headers:Pragma"];
+                    context.Context.Response.Headers["Expires"] = Configuration["StaticFiles:Headers:Expires"];
                 }
             });
 
             // Add a custom Jwt Provider to generate Tokens
             app.UseJwtProvider();
-            
+
+            app.UseIdentity();
+
+            //// Add external authentication middleware below. 
+            //// To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            //app.UseFacebookAuthentication(new FacebookOptions()
+            //{
+            //    AutomaticAuthenticate = true,
+            //    AutomaticChallenge = true,
+            //    AppId = Configuration["Authentication:Facebook:AppId"],
+            //    AppSecret = Configuration["Authentication:Facebook:AppSecret"],
+            //    CallbackPath = "/signin-facebook",
+            //    Scope = { "email" }
+            //});
+
+
+
+            app.UseOpenIddict();
+
             // Add the Jwt Bearer Header Authentication to validate Tokens
             app.UseJwtBearerAuthentication(new JwtBearerOptions()
             {
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
                 RequireHttpsMetadata = false,
+                Authority = "http://localhost:14600/",
                 TokenValidationParameters = new TokenValidationParameters()
                 {
-                    IssuerSigningKey = JwtProvider.SecurityKey,
-                    ValidIssuer = JwtProvider.Issuer,
+                    //IssuerSigningKey = JwtProvider.SecurityKey,
+                    //ValidIssuer = JwtProvider.Issuer,
                     ValidateIssuer = false,
                     ValidateAudience = false
                 },

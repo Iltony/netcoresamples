@@ -60,21 +60,6 @@ namespace OpenGameListWebApp.Data
         #endregion Public Methods
 
         #region Private Methods
-        private void CreateApplication()
-        {
-            DbContext.Add(new OpenIddictApplication
-            {
-                Id = Configuration["Authentication:OpenIddict:ApplicationId"],
-                DisplayName = Configuration["Authentication:OpenIddict:DisplayName"],
-                RedirectUri = Configuration["Authentication:OpenIddict:TokenEndPoint"],
-                LogoutRedirectUri = "/",
-                ClientId = Configuration["Authentication:OpenIddict:ClientId"],
-                ClientSecret = Crypto.HashPassword(Configuration["Authentication:OpenIddict:ClientSecret"]),
-                Type = OpenIddictConstants.ClientTypes.Public
-            });
-            DbContext.SaveChanges();
-        }
-        #endregion
         #region Seed Methods
         private async Task CreateApplication()
         {
@@ -191,8 +176,7 @@ namespace OpenGameListWebApp.Data
             // local variables
             DateTime createdDate = new DateTime(2016, 03, 01, 12, 30, 00);
             DateTime lastModifiedDate = DateTime.Now;
-            var authorId = DbContext.Users.Where(u => u.UserName ==
-            "Admin").FirstOrDefault().Id;
+            var authorId = DbContext.Users.Where(u => u.UserName == "Admin").FirstOrDefault().Id;
 #if DEBUG
             var num = 1000; // create 1000 sample items
             for (int id = 1; id <= num; id++)
@@ -302,24 +286,21 @@ namespace OpenGameListWebApp.Data
             {
                 int numComments = 10; // comments per item
                 for (int i = 1; i <= numComments; i++)
-                    DbContext.Comments.Add(GetSampleComment(i, e1.Entity.Id, authorId,
-                    createdDate.AddDays(i)));
+                    DbContext.Comments.Add(GetSampleComment(i, e1.Entity.Id, authorId, createdDate.AddDays(i)));
                 for (int i = 1; i <= numComments; i++)
-                    DbContext.Comments.Add(GetSampleComment(i, e2.Entity.Id, authorId,
-                    createdDate.AddDays(i)));
+                    DbContext.Comments.Add(GetSampleComment(i, e2.Entity.Id, authorId, createdDate.AddDays(i)));
                 for (int i = 1; i <= numComments; i++)
-                    DbContext.Comments.Add(GetSampleComment(i, e3.Entity.Id, authorId,
-                    createdDate.AddDays(i)));
+                    DbContext.Comments.Add(GetSampleComment(i, e3.Entity.Id, authorId, createdDate.AddDays(i)));
                 for (int i = 1; i <= numComments; i++)
-                    DbContext.Comments.Add(GetSampleComment(i, e4.Entity.Id, authorId,
-                    createdDate.AddDays(i)));
+                    DbContext.Comments.Add(GetSampleComment(i, e4.Entity.Id, authorId, createdDate.AddDays(i)));
                 for (int i = 1; i <= numComments; i++)
-                    DbContext.Comments.Add(GetSampleComment(i, e5.Entity.Id, authorId,
-                    createdDate.AddDays(i)));
+                    DbContext.Comments.Add(GetSampleComment(i, e5.Entity.Id, authorId, createdDate.AddDays(i)));
             }
             DbContext.SaveChanges();
         }
         #endregion Seed Methods
+        #endregion
+
         #region Utility Methods
         /// <summary>
         /// Generate a sample item to populate the DB.
