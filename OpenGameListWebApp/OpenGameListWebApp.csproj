@@ -11,8 +11,6 @@
 
   <ItemGroup>
     <Content Include="ViewModels\ItemViewModel.cs" />
-    <Content Include="wwwroot\systemjs.config.js" />
-    <Content Include="wwwroot\index.html" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.2.0-beta1" />
@@ -54,11 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="wwwroot\favicon.ico" />
-    <None Include="wwwroot\img\header-bg.png" />
-    <None Include="wwwroot\img\logo.svg" />
   </ItemGroup>
 
 </Project>

@@ -130,7 +130,7 @@ namespace OpenGameListWebApp.Classes
                     return;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO: handle errors
                 //IN THE VERSION BELOW USE throw ex
