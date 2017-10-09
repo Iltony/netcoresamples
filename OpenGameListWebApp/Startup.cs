@@ -132,20 +132,18 @@ namespace OpenGameListWebApp
             app.UseJwtProvider();
 
             app.UseIdentity();
-
-            //// Add external authentication middleware below. 
-            //// To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
-            //app.UseFacebookAuthentication(new FacebookOptions()
-            //{
-            //    AutomaticAuthenticate = true,
-            //    AutomaticChallenge = true,
-            //    AppId = Configuration["Authentication:Facebook:AppId"],
-            //    AppSecret = Configuration["Authentication:Facebook:AppSecret"],
-            //    CallbackPath = "/signin-facebook",
-            //    Scope = { "email" }
-            //});
-
-
+            
+            // Add external authentication middleware below.
+            // To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            app.UseFacebookAuthentication(new FacebookOptions()
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                AppId = Configuration["Authentication:Facebook:AppId"],
+                AppSecret = Configuration["Authentication:Facebook:AppSecret"],
+                CallbackPath = "/signin-facebook",
+                Scope = { "email" }
+            });
 
             app.UseOpenIddict();
 

@@ -1,34 +1,37 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OpenGameListWebApp.ViewModels;
+using Nelibur.ObjectMapper;
 using Newtonsoft.Json;
 using OpenGameListWebApp.Data;
 using OpenGameListWebApp.Data.Items;
-using Nelibur.ObjectMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
+using OpenGameListWebApp.Data.Users;
+using OpenGameListWebApp.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace OpenGameListWebApp.Controllers
 {
     [Route("api/[controller]")]
-    public class ItemsController : Controller
+    public class ItemsController : BaseController
     {
         #region Private Fields
         private ApplicationDbContext DbContext;
         #endregion Private Fields
 
         #region Constructor
-        public ItemsController(ApplicationDbContext context)
-        {
-            // Dependency Injection
-            DbContext = context;
-        }
+        public ItemsController(
+        ApplicationDbContext context,
+        SignInManager<ApplicationUser> signInManager,
+        UserManager<ApplicationUser> userManager) : base(
+        context,
+        signInManager,
+        userManager)
+        { }
         #endregion Constructor
-
 
         #region RESTful Conventions
 
@@ -69,7 +72,7 @@ namespace OpenGameListWebApp.Controllers
         /// <returns>Creates a new Item and return it accordingly.</returns> 
         [HttpPost()]
         [Authorize]
-        public IActionResult Add([FromBody]ItemViewModel ivm)
+        public async Task<IActionResult> Add([FromBody]ItemViewModel ivm)
         {
             if (ivm != null)
             {
@@ -77,7 +80,7 @@ namespace OpenGameListWebApp.Controllers
                 var item = TinyMapper.Map<Item>(ivm);
                 // override any property that could be wise to set from server - side only
                 item.CreatedDate = item.LastModifiedDate = DateTime.Now;
-                item.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                item.UserId = await GetCurrentUserId();
                 // add the new item     
                 DbContext.Items.Add(item);
                 // persist the changes into the Database.
