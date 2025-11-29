@@ -10,7 +10,7 @@
         "reflect-metadata": "^0.1.10",
         "typings": "^2.1.1",
 
-        "@angular/common": "4.0.2",
+        "@angular/common": "19.2.16",
         "@angular/compiler": "4.0.2",
         "@angular/core": "10.2.5",
         "@angular/forms": "4.0.2",
